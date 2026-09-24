@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "./Snake.css";
 import sonidoComer from "./sonidos/comer.wav";
 import sonidoMorir from "./sonidos/morir.wav";
+import Leaderboard from "../../../components/Leaderboard/Leaderboard";
+import { submitScore } from "../../../services/leaderboard";
 
 const sounds = {
   eat: new Audio(sonidoComer),
@@ -58,6 +60,12 @@ function Snake() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [showScoreForm, setShowScoreForm] = useState(false);
+  const [initials, setInitials] = useState("");
+  const [savingScore, setSavingScore] = useState(false);
+  const [scoreSaved, setScoreSaved] = useState(false);
+  const [leaderboardKey, setLeaderboardKey] = useState(0);
+
   const [food, setFood] = useState(() =>
     getRandomFood(INITIAL_SNAKE)
   );
@@ -124,8 +132,40 @@ function Snake() {
     setScore(0);
     setGameOver(false);
     setPaused(false);
+
+    setShowScoreForm(false);
+    setInitials("");
+    setSavingScore(false);
+    setScoreSaved(false);
+
     setFood(getRandomFood(INITIAL_SNAKE));
   }, []);
+
+  const handleSaveScore = async () => {
+    const cleanInitials = initials
+      .toUpperCase()
+      .replace(/[^A-Z]/g, "");
+
+    if (cleanInitials.length !== 4) {
+      return;
+    }
+
+    try {
+      setSavingScore(true);
+
+      await submitScore("snake", cleanInitials, score);
+
+      setScoreSaved(true);
+      setShowScoreForm(false);
+
+      // Fuerza a Leaderboard a volver a cargar los scores
+      setLeaderboardKey((current) => current + 1);
+    } catch (error) {
+      console.error("Error saving score:", error);
+    } finally {
+      setSavingScore(false);
+    }
+  };
 
   const changeDirection = useCallback((newDirection) => {
     const current = directionRef.current;
@@ -144,6 +184,15 @@ function Snake() {
   // Keyboard controls
   useEffect(() => {
     function handleKeyDown(event) {
+      // No capturar controles del juego mientras se escribe en un input
+      if (
+        event.target.tagName === "INPUT" ||
+        event.target.tagName === "TEXTAREA" ||
+        event.target.tagName === "SELECT"
+      ) {
+        return;
+      }
+
       const keyMap = {
         ArrowUp: { x: 0, y: -1 },
         w: { x: 0, y: -1 },
@@ -284,11 +333,70 @@ function Snake() {
           {gameOver && (
             <div className="game-overlay">
               <h2>GAME OVER</h2>
+
               <p>Puntaje: {score}</p>
 
-              <button onClick={resetGame}>
-                JUGAR OTRA VEZ
-              </button>
+              {scoreSaved ? (
+                <>
+                  <p className="score-saved">
+                    SCORE GUARDADO
+                  </p>
+
+                  <button onClick={resetGame}>
+                    JUGAR OTRA VEZ
+                  </button>
+                </>
+              ) : !showScoreForm ? (
+                <>
+                  <button onClick={() => setShowScoreForm(true)}>
+                    GUARDAR SCORE
+                  </button>
+
+                  <button onClick={resetGame}>
+                    JUGAR OTRA VEZ
+                  </button>
+                </>
+              ) : (
+                <div className="score-form">
+                  <p>INGRESA TUS INICIALES</p>
+
+                  <input
+                    type="text"
+                    value={initials}
+                    onChange={(event) =>
+                      setInitials(
+                        event.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z]/g, "")
+                          .slice(0, 4)
+                      )
+                    }
+                    maxLength={4}
+                    autoFocus
+                    placeholder="ABCD"
+                    aria-label="Iniciales"
+                  />
+
+                  <div className="score-form-buttons">
+                    <button
+                      onClick={handleSaveScore}
+                      disabled={initials.length !== 4 || savingScore}
+                    >
+                      {savingScore ? "GUARDANDO..." : "GUARDAR"}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowScoreForm(false);
+                        setInitials("");
+                      }}
+                      disabled={savingScore}
+                    >
+                      OMITIR
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -314,6 +422,10 @@ function Snake() {
           </button>
         </div>
       </section>
+      <Leaderboard
+        key={leaderboardKey}
+        game="snake"
+      />
     </main>
   );
 }
