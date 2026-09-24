@@ -6,21 +6,25 @@ const games = [
     name: "Snake",
     path: "/snake",
     desc: "El clasico. Probablemente ya lo hayas jugado. No mucho más que decir",
+    wip: false,
   },
   {
     name: "Tetris",
     path: "/tetris",
     desc: "Otro clasico. Una build basica pero divertida de Tetris, intenta romper el record!!",
+    wip: true,
   },
   {
     name: "Frogger",
     path: "/frogger",
     desc: "Llega hasta el final sin que te atropellen. Debería ser infinito but who cares",
+    wip: true,
   },
   {
     name: "Breakout",
     path: "/breakout",
     desc: "Rompe todos los bloques! satisfactorio pero un poco aburrido tbh",
+    wip: true,
   },
 ];
 
@@ -53,6 +57,9 @@ function Home() {
             >
               <div className="game-card-content">
                 <h2>{game.name}</h2>
+                {game.wip && (
+                  <p className="wip-disclaimer">⚠ EN DESARROLLO ⚠ | VUELVE PRONTO</p>
+                )}
                 <p>{game.desc}</p>
               </div>
             </Link>
