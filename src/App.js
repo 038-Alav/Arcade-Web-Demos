@@ -4,7 +4,7 @@ import Snake from "./pages/games/Snake/Snake";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Arcade-Web-Demos">
       <Routes>
         <Route path="/" element={<Home />} />
 
