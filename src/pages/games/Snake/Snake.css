@@ -1,0 +1,169 @@
+.snake-page {
+  min-height: 100vh;
+  padding: 30px 20px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #252047 0%,
+      #100e1c 45%,
+      #08070d 100%
+    );
+
+  color: #ffffff;
+  font-family: "Courier New", monospace;
+}
+
+.snake-header {
+  max-width: 700px;
+  margin: 0 auto 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.snake-header h1 {
+  margin: 0;
+
+  font-size: 2rem;
+  letter-spacing: 3px;
+
+  text-shadow: 3px 3px 0 #7c3aed;
+}
+
+.back-button {
+  color: #aaa5c7;
+  text-decoration: none;
+
+  font-weight: bold;
+}
+
+.back-button:hover {
+  color: #ffffff;
+}
+
+.score {
+  color: #aaa5c7;
+}
+
+.score strong {
+  color: #c4b5fd;
+}
+
+/* Game */
+
+.snake-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.canvas-wrapper {
+  position: relative;
+
+  width: min(90vw, 400px);
+  aspect-ratio: 1;
+
+  border: 3px solid #7c3aed;
+  box-shadow: 0 0 0 4px #211b32;
+}
+
+.canvas-wrapper canvas {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  image-rendering: pixelated;
+}
+
+/* Overlay */
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(8, 7, 13, 0.88);
+
+  text-align: center;
+}
+
+.game-overlay h2 {
+  margin: 0 0 10px;
+
+  font-size: 2rem;
+  letter-spacing: 3px;
+}
+
+.game-overlay p {
+  color: #aaa5c7;
+}
+
+/* Controls */
+
+.snake-controls {
+  margin-top: 25px;
+
+  text-align: center;
+
+  color: #77718e;
+}
+
+.snake-controls p {
+  margin: 8px 0;
+}
+
+.snake-controls strong {
+  color: #aaa5c7;
+}
+
+.snake-controls button,
+.game-overlay button {
+  margin-top: 15px;
+
+  padding: 12px 20px;
+
+  border: 1px solid #7c3aed;
+  border-radius: 4px;
+
+  background: #7c3aed;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-weight: bold;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+}
+
+.snake-controls button:hover,
+.game-overlay button:hover {
+  background: #6d28d9;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .snake-header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .snake-header h1 {
+    order: -1;
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .score {
+    font-size: 0.9rem;
+  }
+}
